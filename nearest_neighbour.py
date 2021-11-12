@@ -86,6 +86,7 @@ def predictknn(classifier, x_test: np.array):
     raise NotImplementedError()
 
 
+
 def simple_test():
     data = np.load('mnist_all_not_compressed.npz')
 
