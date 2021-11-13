@@ -93,7 +93,7 @@ def test(examplesNum):
 
     x_train, y_train = gensmallm([train0, train1, train2, train3], [1, 3, 4, 6], examplesNum)
 
-    x_test, y_test = gensmallm([test0, test1, test2, test3], [1, 3, 4, 6], examplesNum)
+    x_test, y_test = gensmallm([test0, test1, test2, test3], [1, 3, 4, 6], len(test0) + len(test1) + len(test2) + len(test3))
 
     classifier1 = learnknn(1, x_train, y_train)
 
