@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 import scipy
 from classifier import Classifier
@@ -139,7 +141,7 @@ def q2a():
     max_errors = []
     for s in sample_size:
         err = 0
-        min_err = max()
+        min_err = sys.maxsize
         max_err = 0
         for i in range(10):
             curr_err = test(s)
@@ -151,10 +153,10 @@ def q2a():
         min_errors.append(min_err)
         max_errors.append(max_err)
 
+    subtract = [x1 - x2 for (x1, x2) in zip(max_errors, min_errors)]
     plt.plot(sample_size, errors)
-
-    plt.bar(sample_size, min_errors, 0.4, label = "min", color=['cyan', 'cyan', 'cyan', 'cyan', 'cyan'])
-    plt.bar(sample_size, max_errors, 1, bottom = min_errors, label = "max", color = ['blue', 'blue', 'blue', 'blue', 'blue'])
+    plt.bar(sample_size, min_errors, 1, label = "min", color=['cyan', 'cyan', 'cyan', 'cyan', 'cyan'])
+    plt.bar(sample_size, subtract, 1, bottom = min_errors, label = "max", color = ['blue', 'blue', 'blue', 'blue', 'blue'])
     plt.title("average test error")
     plt.xlabel("sample size")
     plt.ylabel("average error")
