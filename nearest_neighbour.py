@@ -4,6 +4,8 @@ from classifier import Classifier
 from scipy.spatial import distance
 import math
 import operator
+import matplotlib.pyplot as plt
+
 def gensmallm(x_list: list, y_list: list, m: int):
     """
     gensmallm generates a random sample of size m along side its labels.
@@ -74,6 +76,29 @@ def predictknn(classifier, x_test: np.array):
 
     return np.asarray(y_test).reshape((len(y_test), 1))
 
+def test(examplesNum):
+    data = np.load('mnist_all.npz')
+
+    train0 = data['train0']
+    train1 = data['train1']
+    train2 = data['train2']
+    train3 = data['train3']
+
+    test0 = data['test0']
+    test1 = data['test1']
+    test2 = data['test2']
+    test3 = data['test3']
+
+    x_train, y_train = gensmallm([train0, train1, train2, train3], [1, 3, 4, 6], examplesNum)
+
+    x_test, y_test = gensmallm([test0, test1, test2, test3], [1, 3, 4, 6], examplesNum)
+
+    classifier1 = learnknn(1, x_train, y_train)
+
+    preds = predictknn(classifier1, x_test)
+    preds = preds.flatten()
+
+    return np.mean(preds != y_test)
 
 
 def simple_test():
@@ -107,6 +132,34 @@ def simple_test():
     # this line should print the classification of the i'th test sample.
     print(f"The {i}'th test sample was classified as {preds[i]}")
 
+def q2a():
+    sample_size = [20, 30, 50, 80, 100]
+    errors = []
+    min_errors = []
+    max_errors = []
+    for s in sample_size:
+        err = 0
+        min_err = max()
+        max_err = 0
+        for i in range(10):
+            curr_err = test(s)
+            min_err = min(min_err, curr_err)
+            max_err = max(max_err, curr_err)
+            err += curr_err
+        err /= 10
+        errors.append(err)
+        min_errors.append(min_err)
+        max_errors.append(max_err)
+
+    plt.plot(sample_size, errors)
+
+    plt.bar(sample_size, min_errors, 0.4, label = "min", color=['cyan', 'cyan', 'cyan', 'cyan', 'cyan'])
+    plt.bar(sample_size, max_errors, 1, bottom = min_errors, label = "max", color = ['blue', 'blue', 'blue', 'blue', 'blue'])
+    plt.title("average test error")
+    plt.xlabel("sample size")
+    plt.ylabel("average error")
+    plt.legend()
+    plt.show()
 
 if __name__ == '__main__':
     k = 1
@@ -118,5 +171,6 @@ if __name__ == '__main__':
     print(y_testprediction)
     # before submitting, make sure that the function simple_test runs without errors
     simple_test()
+    q2a()
 
 
