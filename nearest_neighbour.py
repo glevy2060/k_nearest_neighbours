@@ -7,7 +7,7 @@ from scipy.spatial import distance
 import math
 import operator
 import matplotlib.pyplot as plt
-
+import random
 def gensmallm(x_list: list, y_list: list, m: int):
     """
     gensmallm generates a random sample of size m along side its labels.
@@ -78,7 +78,7 @@ def predictknn(classifier, x_test: np.array):
 
     return np.asarray(y_test).reshape((len(y_test), 1))
 
-def test(examplesNum):
+def test(examplesNum, k):
     data = np.load('mnist_all.npz')
 
     train0 = data['train0']
@@ -93,9 +93,10 @@ def test(examplesNum):
 
     x_train, y_train = gensmallm([train0, train1, train2, train3], [1, 3, 4, 6], examplesNum)
 
-    x_test, y_test = gensmallm([test0, test1, test2, test3], [1, 3, 4, 6], len(test0) + len(test1) + len(test2) + len(test3))
+    #x_test, y_test = gensmallm([test0, test1, test2, test3], [1, 3, 4, 6], len(test0) + len(test1) + len(test2) + len(test3))
+    x_test, y_test = gensmallm([test0, test1, test2, test3], [1, 3, 4, 6], 20)
 
-    classifier1 = learnknn(1, x_train, y_train)
+    classifier1 = learnknn(k, x_train, y_train)
 
     preds = predictknn(classifier1, x_test)
     preds = preds.flatten()
@@ -144,7 +145,7 @@ def q2a():
         min_err = sys.maxsize
         max_err = 0
         for i in range(10):
-            curr_err = test(s)
+            curr_err = test(s, 1)
             min_err = min(min_err, curr_err)
             max_err = max(max_err, curr_err)
             err += curr_err
@@ -163,7 +164,7 @@ def q2a():
     plt.legend()
     plt.show()
 
-if __name__ == '__main__':
+def q1():
     k = 1
     x_train = np.array([[1, 2], [3, 4], [5, 6]])
     y_train = np.array([1, 0, 1])
@@ -171,8 +172,44 @@ if __name__ == '__main__':
     x_test = np.array([[10, 11], [3.1, 4.2], [2.9, 4.2], [5, 6]])
     y_testprediction = predictknn(classifier, x_test)
     print(y_testprediction)
+
+
+def q2e():
+    errors = []
+    for k in range(1, 12):
+        err = 0
+        for i in range(0, 10):
+            curr_err = test(100, k)
+            err += curr_err
+        errors.append(err / 10)
+
+    plt.plot(np.arange(1, 12), errors)
+    plt.title("average test error")
+    plt.xlabel("k")
+    plt.ylabel("average error")
+    plt.legend()
+    plt.show()
+
+
+def changeLabelsRandomlly(y_train):
+    labels = [1, 3, 4, 6]
+    for i in range(0, 20):
+        i_label = y_train[i]
+        new_label = random.choice(labels)
+        while i_label == new_label:
+            new_label = random.choice(labels)
+        y_train[i] = new_label
+
+    return y_train
+
+
+if __name__ == '__main__':
     # before submitting, make sure that the function simple_test runs without errors
-    simple_test()
-    q2a()
+    # q1()
+    # q2a()
+    q2e()
+
+    #keep checking the graph of 2e
+    # keep doing f
 
 
