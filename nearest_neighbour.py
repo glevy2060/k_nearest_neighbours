@@ -57,7 +57,7 @@ def getMostCommonLabel(indexes, y_train, labels):
        counters[index] += 1
 
     max_value = np.max(counters)
-    return labels[np.where(counters == max_value)[0]]
+    return labels[np.where(counters == max_value)][0]
 
 
 def learnknn(k: int, x_train: np.array, y_train: np.array):
@@ -78,7 +78,7 @@ def predictknn(classifier, x_test: np.array):
 
     return np.asarray(y_test).reshape((len(y_test), 1))
 
-def test(examplesNum, k):
+def test(examplesNum, k, is_corrupted_labels = False):
     data = np.load('mnist_all.npz')
 
     train0 = data['train0']
@@ -91,10 +91,14 @@ def test(examplesNum, k):
     test2 = data['test2']
     test3 = data['test3']
 
+    # x_train, y_train = gensmallm([train0, train1, train2, train3], [1, 3, 4, 6], 100)
     x_train, y_train = gensmallm([train0, train1, train2, train3], [1, 3, 4, 6], examplesNum)
 
-    #x_test, y_test = gensmallm([test0, test1, test2, test3], [1, 3, 4, 6], len(test0) + len(test1) + len(test2) + len(test3))
-    x_test, y_test = gensmallm([test0, test1, test2, test3], [1, 3, 4, 6], 20)
+    if is_corrupted_labels: #section 2f
+        y_train = changeLabelsRandomlly(y_train)
+
+    # x_test, y_test = gensmallm([test0, test1, test2, test3], [1, 3, 4, 6], 100)
+    x_test, y_test = gensmallm([test0, test1, test2, test3], [1, 3, 4, 6], len(test0) + len(test1) + len(test2) + len(test3))
 
     classifier1 = learnknn(k, x_train, y_train)
 
@@ -191,23 +195,42 @@ def q2e():
     plt.show()
 
 
+
 def changeLabelsRandomlly(y_train):
     labels = [1, 3, 4, 6]
-    for i in range(0, 20):
+    indexes = np.arange(0, 100)
+    random20_indexes = random.choices(indexes, k=20)
+    for i in random20_indexes:
         i_label = y_train[i]
         new_label = random.choice(labels)
         while i_label == new_label:
             new_label = random.choice(labels)
         y_train[i] = new_label
-
     return y_train
+
+def q2f():
+    errors = []
+    for k in range(1, 12):
+        err = 0
+        for i in range(0, 10):
+            curr_err = test(100, k, True)
+            err += curr_err
+        errors.append(err / 10)
+
+    plt.plot(np.arange(1, 12), errors)
+    plt.title("average test error")
+    plt.xlabel("k")
+    plt.ylabel("average error")
+    plt.legend()
+    plt.show()
 
 
 if __name__ == '__main__':
     # before submitting, make sure that the function simple_test runs without errors
     # q1()
     # q2a()
-    q2e()
+    #q2e()
+    q2f()
 
     #keep checking the graph of 2e
     # keep doing f
