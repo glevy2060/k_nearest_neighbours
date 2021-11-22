@@ -230,7 +230,7 @@ if __name__ == '__main__':
     # q1()
     # q2a()
     #q2e()
-    q2f()
+    #q2f()
 
     #keep checking the graph of 2e
     # keep doing f
