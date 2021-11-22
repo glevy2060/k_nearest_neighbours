@@ -1,13 +1,11 @@
 import sys
-
 import numpy as np
-import scipy
 from classifier import Classifier
-from scipy.spatial import distance
 import math
 import operator
 import matplotlib.pyplot as plt
 import random
+
 def gensmallm(x_list: list, y_list: list, m: int):
     """
     gensmallm generates a random sample of size m along side its labels.
@@ -78,6 +76,7 @@ def predictknn(classifier, x_test: np.array):
 
     return np.asarray(y_test).reshape((len(y_test), 1))
 
+
 def test(examplesNum, k, is_corrupted_labels = False):
     data = np.load('mnist_all.npz')
 
@@ -139,6 +138,7 @@ def simple_test():
     # this line should print the classification of the i'th test sample.
     print(f"The {i}'th test sample was classified as {preds[i]}")
 
+
 def q2a():
     sample_size = [20, 30, 50, 80, 100]
     errors = []
@@ -168,6 +168,7 @@ def q2a():
     plt.legend()
     plt.show()
 
+
 def q1():
     k = 1
     x_train = np.array([[1, 2], [3, 4], [5, 6]])
@@ -175,7 +176,7 @@ def q1():
     classifier = learnknn(k, x_train, y_train)
     x_test = np.array([[10, 11], [3.1, 4.2], [2.9, 4.2], [5, 6]])
     y_testprediction = predictknn(classifier, x_test)
-    print(y_testprediction)
+    print(y_testprediction.flatten())
 
 
 def q2e():
@@ -195,7 +196,6 @@ def q2e():
     plt.show()
 
 
-
 def changeLabelsRandomlly(y_train):
     labels = [1, 3, 4, 6]
     indexes = np.arange(0, 100)
@@ -207,6 +207,7 @@ def changeLabelsRandomlly(y_train):
             new_label = random.choice(labels)
         y_train[i] = new_label
     return y_train
+
 
 def q2f():
     errors = []
@@ -227,12 +228,10 @@ def q2f():
 
 if __name__ == '__main__':
     # before submitting, make sure that the function simple_test runs without errors
-    # q1()
-    # q2a()
-    #q2e()
-    #q2f()
+    q1()
+    q2a()
+    q2e()
+    q2f()
 
-    #keep checking the graph of 2e
-    # keep doing f
 
 
